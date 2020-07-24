@@ -1,0 +1,49 @@
+version: "3"
+services:
+  nginx:
+    build:
+      context: .
+      dockerfile: ./compose/production/nginx/Dockerfile
+    container_name: tuto_nginx
+    depends_on:
+      - vue
+    environment:
+      SERVICE_PORTS: 80
+      WORKER_PROCESSES: 2
+      WORKER_CONNECTIONS: 1024
+      KEEPALIVE_TIMEOUT: 65
+      GZIP: "on"
+      BACKEND_HOST: tuto_vue:8080
+      BACKEND_MAX_FAILES: 3
+      BACKEND_FAIL_TIMEOUT: 10s
+      SERVER_PORT: 80
+      SERVER_NAME: localhost
+      LOG_STDOUT: "true"
+    ports:
+      - "80:80"
+    networks:
+      - tuto_client
+    volumes:
+      - assets:/var/www/_vue
+
+  vue:
+    build:
+      context: .
+      dockerfile: ./compose/production/vue/Dockerfile
+    image: tuto_vue
+    container_name: tuto_vue
+    networks:
+      - tuto_client
+    volumes:
+      - assets:/tuto_vue/.vue/dist
+    privileged: true
+    stdin_open: true
+    tty: true
+
+networks:
+  tuto_client:
+    external: true
+
+volumes:
+  assets:
+    driver: local
