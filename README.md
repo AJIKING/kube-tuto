@@ -1,24 +1,21 @@
 # kube-tuto
 
 ## Project setup
+
 ```
 npm install
 ```
 
 ### Compiles and hot-reloads for development
+
 ```
 npm run serve
 ```
 
-### Compiles and minifies for production
-```
-npm run build
-```
+### Docker image container
 
-### Lints and fixes files
 ```
-npm run lint
-```
+docker-compose -f production.yml build
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+docker-compose -f production.yml up -d
+```

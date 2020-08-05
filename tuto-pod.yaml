@@ -1,12 +1,12 @@
-apiVersion: apps/v1
+apiVersion: v1
 kind: Pod
 metadata:
   name: pod-tuto
 spec:
   containers:
-    - name: tuto-nginx
-      image: "tuto-nginx"
-      imagePullPolicy: Always
+    - name: nginx
+      image: tuto-nginx:latest
+      imagePullPolicy: Never
       ports:
         - containerPort: 80
       env:
@@ -18,22 +18,9 @@ spec:
           value: "true"
         - name: BACKEND_HOST
           value: "localhost:8080"
-      volumeMounts:
-        - mountPath: /var/www/_vue
-          name: assets
 
-    - name: web
-      image: "tuto-vue"
-      lifecycle:
-        postStart:
-          exec:
-            command:
-              - cp
-              - -R
-              - /app/dist
-              - /
+    - name: vue
+      image: tuto-vue:latest
+      imagePullPolicy: Never
       ports:
         - containerPort: 8080
-      volumeMounts:
-        - mountPath: /dist
-          name: assets

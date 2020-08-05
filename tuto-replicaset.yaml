@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: replicaset-tuto
+  labels:
+    app: replicaset-tuto
+spec:
+  replicas: 2 # pod数を指定している
+  selector:
+    matchLabels:
+      app: replicaset-tuto
+  template:
+    metadata:
+      labels:
+        app: replicaset-tuto
+    spec:
+      containers:
+        - name: nginx
+          image: tuto-nginx:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 80
+          env:
+            - name: WORKER_PROCESSES
+              value: "2"
+            - name: WORKER_CONNECTIONS
+              value: "1024"
+            - name: LOG_STDOUT
+              value: "true"
+            - name: BACKEND_HOST
+              value: "localhost:8080"
+
+        - name: vue
+          image: tuto-vue:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8080

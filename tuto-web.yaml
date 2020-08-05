@@ -1,0 +1,52 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: web-svc
+  labels:
+    app: web
+spec:
+  selector:
+    app: web
+  ports:
+    - name: http
+      port: 80
+  type: NodePort
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web
+  labels:
+    app: web
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: web
+  template:
+    metadata:
+      labels:
+        app: web
+    spec:
+      containers:
+        - name: nginx
+          image: tuto-nginx:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 80
+          env:
+            - name: WORKER_PROCESSES
+              value: "2"
+            - name: WORKER_CONNECTIONS
+              value: "1024"
+            - name: LOG_STDOUT
+              value: "true"
+            - name: BACKEND_HOST
+              value: "localhost:8080"
+
+        - name: vue
+          image: tuto-vue:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8080
